@@ -121,7 +121,7 @@ jobs:
           services:
             app:
               image: ghcr.io/${{ steps.repo.outputs.repo }}:${{ matrix.config }}-latest
-              container_name: ${{ matrix.config }}-app
+              container_name: ${{ matrix.config }}-website
               ports:
                 - "${{ steps.port.outputs.port }}:80"
               restart: unless-stopped
