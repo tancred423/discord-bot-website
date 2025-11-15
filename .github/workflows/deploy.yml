@@ -116,6 +116,8 @@ jobs:
       - name: Create docker-compose file for config
         run: |
           cat > docker-compose.${{ matrix.config }}.yml << EOF
+          name: ${{ matrix.config }}-website
+          
           version: '3.8'
           
           services:
