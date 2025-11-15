@@ -119,7 +119,7 @@ jobs:
           version: '3.8'
           
           services:
-            app:
+            website:
               image: ghcr.io/${{ steps.repo.outputs.repo }}:${{ matrix.config }}-latest
               container_name: ${{ matrix.config }}-website
               ports:
