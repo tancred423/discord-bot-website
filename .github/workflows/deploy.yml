@@ -118,8 +118,6 @@ jobs:
           cat > docker-compose.${{ matrix.config }}.yml << EOF
           name: ${{ matrix.config }}-website
           
-          version: '3.8'
-          
           services:
             website:
               image: ghcr.io/${{ steps.repo.outputs.repo }}:${{ matrix.config }}-latest
@@ -136,7 +134,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           source: "docker-compose.${{ matrix.config }}.yml"
-          target: ${{ secrets.DEPLOY_PATH }}/${{ matrix.config }}
+          target: ${{ secrets.DEPLOY_PATH }}/${{ matrix.config }}-website
       
       - name: Deploy to server
         uses: appleboy/ssh-action@master
@@ -146,7 +144,7 @@ jobs:
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             set -e
-            cd ${{ secrets.DEPLOY_PATH }}/${{ matrix.config }}
+            cd ${{ secrets.DEPLOY_PATH }}/${{ matrix.config }}-website
             
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
             
