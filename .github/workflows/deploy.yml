@@ -1,0 +1,158 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  discover-configs:
+    name: Discover Configs
+    runs-on: ubuntu-latest
+    outputs:
+      configs: ${{ steps.set-configs.outputs.configs }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Discover config directories
+        id: set-configs
+        run: |
+          CONFIGS=$(find public -mindepth 1 -maxdepth 1 -type d -not -name '.*' | sed 's|public/||' | jq -R -s -c 'split("\n")[:-1]')
+          echo "configs=$CONFIGS" >> $GITHUB_OUTPUT
+          echo "Found configs: $CONFIGS"
+
+  check:
+    name: Check Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Type check
+        run: npx vue-tsc --noEmit
+      
+      - name: Lint (if available)
+        run: npm run lint || echo "No lint script found, skipping"
+
+  build:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    needs: [check, discover-configs]
+    strategy:
+      matrix:
+        config: ${{ fromJson(needs.discover-configs.outputs.configs) }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Get lowercase repository name
+        id: repo
+        run: |
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "repo=$REPO_LOWER" >> $GITHUB_OUTPUT
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          build-args: |
+            VITE_BOT_CONFIG=${{ matrix.config }}
+          tags: |
+            ghcr.io/${{ steps.repo.outputs.repo }}:${{ matrix.config }}-latest
+            ghcr.io/${{ steps.repo.outputs.repo }}:${{ matrix.config }}-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    needs: [build, discover-configs]
+    strategy:
+      matrix:
+        config: ${{ fromJson(needs.discover-configs.outputs.configs) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Get lowercase repository name
+        id: repo
+        run: |
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "repo=$REPO_LOWER" >> $GITHUB_OUTPUT
+      
+      - name: Create docker-compose file for config
+        run: |
+          cat > docker-compose.${{ matrix.config }}.yml << EOF
+          version: '3.8'
+          
+          services:
+            app:
+              image: ghcr.io/${{ steps.repo.outputs.repo }}:${{ matrix.config }}-latest
+              ports:
+                - "80:80"
+              restart: unless-stopped
+          EOF
+      
+      - name: Copy docker-compose file to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: "docker-compose.${{ matrix.config }}.yml"
+          target: ${{ secrets.DEPLOY_PATH }}/${{ matrix.config }}
+      
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}/${{ matrix.config }}
+            
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+            
+            echo "Stopping existing containers for ${{ matrix.config }}..."
+            docker compose -f docker-compose.${{ matrix.config }}.yml down --volumes=false || true
+            
+            echo "Pulling latest image for ${{ matrix.config }}..."
+            docker compose -f docker-compose.${{ matrix.config }}.yml pull
+            
+            echo "Starting containers for ${{ matrix.config }}..."
+            docker compose -f docker-compose.${{ matrix.config }}.yml up -d --remove-orphans
+            
+            echo "Checking container status for ${{ matrix.config }}..."
+            docker compose -f docker-compose.${{ matrix.config }}.yml ps
+            
+            echo "Cleaning up old images..."
+            docker image prune -af --filter "until=24h" || true
+            
+            echo "Deployment of ${{ matrix.config }} completed successfully!"
+

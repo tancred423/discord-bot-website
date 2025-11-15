@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_BOT_CONFIG=${VITE_BOT_CONFIG:-}
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    restart: unless-stopped
+

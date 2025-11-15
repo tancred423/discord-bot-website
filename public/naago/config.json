@@ -1,0 +1,58 @@
+{
+  "name": "M'naago",
+  "description": "M'naago is a Discord bot for Final Fantasy XIV that provides character profiles and automated Lodestone news notifications. The bot allows you to verify your character, view detailed character profiles with customizable themes, manage favorites, and stay up-to-date with the latest news, maintenances, and updates from the Lodestone.\n\n**Commands**\n\n**Character Profile Commands**\n* `/profile me`\n  Get the profile of your verified character. Characters can be verified with `/verify add`.\n* `/profile find`\n  Get any character's profile by providing the full character name and the server the character is on. Alternatively you can right click a user → choose `Apps` → `Find`. This is faster but requires this user to have a verified character.\n* `/profile favorite`\n  A quick access to character profiles. Favorites can be added or removed with `/favorite add` and `/favorite remove` respectively. Alternatively you can right click a user → choose `Apps` → `Add Favorite` / `Remove Favorite`. This is faster but requires this user to have a verified character.\n\n**Verification Commands**\n* `/verify add`\n  Links your FFXIV character to your Discord account. You will have to verify it by changing the bio of your Lodestone profile. Verification is needed to show your profile via `/profile me`, manage and access favorites and to set a theme.\n* `/verify remove`\n  Unlinks your FFXIV character from your Discord account. Also removes any other information stored of you including your favorites and your chosen theme.\n\n**Favorite Commands**\n* `/favorite add`\n  Save any character as favorite. You can then access them quickly with `/profile favorite`. You can have up to 25 favorites.\n* `/favorite remove`\n  Remove one of your favorites.\n\n**Informational Commands**\n* `/help`\n  View information about the bot and how to use it.\n* `/maintenance`\n  View current maintenances if any. Shows active maintenance schedules and their durations.\n\n**Setup Commands**\n* `/setup lodestone`\n  Set up which channels receive automated Lodestone news updates. You can set or remove channels for each category of news. The Lodestone news categories are: Topic (Latest news, PLL's and patch notes), Notice (Secondary news), Maintenance (All kind of maintenances and their durations), Update (Outcome from maintenances), Status (Technical difficulties and server statuses). By default, this command requires `Manage Channels` permission to execute.\n* `/setup theme`\n  Set a theme for your verified character's profile.",
+  "avatar": "/naago/avatar.png",
+  "banner": "/naago/banner.png",
+  "inviteUrl": "https://discord.com/oauth2/authorize?client_id=913245198685995048&permissions=314368&scope=applications.commands+bot",
+  "supportServerUrl": "https://discord.gg/4GpaH5V",
+  "serverCount": "18 (as of 15 Nov 2025)",
+  "categories": ["Social"],
+  "languages": ["English, US"],
+  "carouselImages": [
+    "/naago/carousel1.png",
+    "/naago/carousel2.png",
+    "/naago/carousel3.png",
+    "/naago/carousel4.png",
+    "/naago/carousel5.png",
+    "/naago/carousel6.png",
+    "/naago/carousel7.png",
+    "/naago/carousel8.png"
+  ],
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/Tancred423/Naago"
+    },
+    {
+      "label": "Terms of Service",
+      "url": "https://github.com/Tancred423/Naago/blob/main/TERMS_OF_SERVICE.md"
+    },
+    {
+      "label": "Privacy Policy",
+      "url": "https://github.com/Tancred423/Naago/blob/main/PRIVACY_POLICY.md"
+    }
+  ],
+  "permissions": [
+    {
+      "name": "View Channels",
+      "reason": "To see configured channels for notifications."
+    },
+    {
+      "name": "Send Messages",
+      "reason": "To send notifications and command responses."
+    },
+    {
+      "name": "Embed Links",
+      "reason": "To display formatted information."
+    },
+    {
+      "name": "Use External Emojis",
+      "reason": "To display game-related icons and visual elements."
+    },
+    {
+      "name": "Attach Files",
+      "reason": "To send generated character profile images."
+    }
+  ]
+}
+
