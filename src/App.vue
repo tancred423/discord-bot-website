@@ -52,6 +52,15 @@ onMounted(async () => {
   try {
     config.value = await loadBotConfig()
     document.title = config.value.name
+    
+    // Set favicon from avatar
+    let favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement
+    if (!favicon) {
+      favicon = document.createElement('link')
+      favicon.rel = 'icon'
+      document.head.appendChild(favicon)
+    }
+    favicon.href = config.value.avatar
   } catch (e) {
     error.value = e instanceof Error ? e.message : 'Unknown error occurred'
   } finally {
