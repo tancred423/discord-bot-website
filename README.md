@@ -1,6 +1,6 @@
 # Discord Bot Website Template
 
-A simple, reusable website template for showcasing your Discord bot with a Discord-themed design.
+A simple, reusable website template for showcasing your Discord bot with a Discord-themed design. Supports hosting multiple bot websites from a single repository with automatic deployment.
 
 ## Features
 
@@ -8,153 +8,155 @@ A simple, reusable website template for showcasing your Discord bot with a Disco
 - Theme switcher (Auto/Light/Dark)
 - Responsive design
 - Image carousel with auto-play
-- Configurable via single JSON file
+- Multi-bot support - host multiple bots from one repository
+- Automatic deployment via GitHub Actions
 - Docker support for easy deployment
+- Dynamic favicon from bot avatar
+- Per-bot port configuration
 
-## Quick Start
+## For developers
 
-### Development
+1. Copy the .env.skel file to .env
+2. Populate `VITE_BOT_CONFIG` with which config you wanna use (this is the folder name in public)
+3. Launch the site:
 
-```bash
-npm install
-npm run dev
-```
+  ```bash
+  docker-compose up
+  ```
 
-Visit `http://localhost:3000`
+### On production
 
-### With Docker
+1. Create the .env file and pick your config
+2. Launch the site
 
-Development:
-```bash
-docker-compose up
-```
-
-Production:
 ```bash
 docker-compose -f docker-compose.prod.yml up --build
 ```
 
-## Configuration
+Note that you can also use the deploy script to automatically launch all configurations. Just make sure to have the .env file set for every config directory.
 
-Edit `/public/config.json` to customize your bot's information:
+## Multi-Bot Configuration
+
+This template supports hosting multiple bots from a single repository. Each bot has its own configuration directory under `/public`.
+
+### Project Structure (Example)
+
+```
+/public
+  /naago
+    config.json         # Naago bot configuration
+    avatar.png          # Bot avatar
+    banner.png          # Banner image
+    carousel1.png       # Screenshots
+    ...
+  /paissa
+    config.json         # Paissa bot configuration
+    avatar.png
+    banner.png
+    ...
+```
+
+### Adding a New Bot
+
+1. Create a new directory under `/public` with your bot's name (e.g., `/public/mybot`)
+2. Add a `config.json` file in that directory
+3. Place your bot's images (avatar, banner, carousel images) in that directory
+4. The deployment workflow will automatically discover and deploy it
+
+### Configuration File
+
+Each bot needs a `config.json` in its directory:
 
 ```json
 {
   "name": "Your Bot Name",
   "description": "Bot description with **markdown** support",
-  "avatar": "/avatar.png",
-  "banner": "/banner.png",
+  "avatar": "/mybot/avatar.png",
+  "banner": "/mybot/banner.png",
   "inviteUrl": "https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID",
   "supportServerUrl": "https://discord.gg/YOUR_INVITE",
-  "serverCount": 100,
+  "serverCount": "100 (as of 25 Nov 2025)",
   "categories": ["Utility", "Fun"],
   "languages": ["English, US"],
+  "port": 3551,
   "carouselImages": [
-    "/carousel1.png",
-    "/carousel2.png"
+    "/mybot/carousel1.png",
+    "/mybot/carousel2.png"
   ],
   "links": [
     {
       "label": "GitHub",
       "url": "https://github.com/your/repo"
-    },
-    {
-      "label": "Terms of Service",
-      "url": "/terms"
-    },
-    {
-      "label": "Privacy Policy",
-      "url": "/privacy"
     }
   ],
   "permissions": [
     {
       "name": "Send Messages",
       "reason": "Required to respond to commands and send notifications."
-    },
-    {
-      "name": "Embed Links",
-      "reason": "Used to display rich formatted messages."
     }
   ]
 }
 ```
 
-## Adding Images
+## Deployment
 
-Place your images in the `/public` folder:
+### Automatic Deployment (GitHub Actions)
 
-- `/public/avatar.png` - Bot avatar (recommended: 512x512px)
-- `/public/banner.png` - Banner image (recommended: 1920x240px)
-- `/public/carousel1.png`, `/public/carousel2.png`, etc. - Screenshots (recommended: 16:9 aspect ratio)
+The repository includes a GitHub Actions workflow that:
 
-## Configuration Fields
+1. Discovers all bot configs in `/public`
+2. Builds a Docker image for each bot
+3. Pushes images to GitHub Container Registry
+4. Deploys each bot to your server with its configured port
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | Bot name displayed throughout the site |
-| `description` | string | Bot description (supports markdown) |
-| `avatar` | string | Path to avatar image |
-| `banner` | string | Path to banner image |
-| `inviteUrl` | string | Discord OAuth2 invite URL |
-| `supportServerUrl` | string | Discord server invite link |
-| `serverCount` | number | Number of servers (auto-formatted: 1.5K, 2.3M, etc.) |
-| `categories` | string[] | Category tags |
-| `languages` | string[] | Supported languages |
-| `carouselImages` | string[] | Array of screenshot paths |
-| `links` | object[] | Additional links (GitHub, website, etc.) |
-| `permissions` | object[] | Required Discord permissions with explanations |
+**Setup:**
 
-### Permission Object
+1. Set up GitHub secrets:
+   - `DEPLOY_HOST` - Your server IP/hostname
+   - `DEPLOY_USER` - SSH username
+   - `DEPLOY_SSH_KEY` - SSH private key
+   - `DEPLOY_PATH` - Base path on server (e.g., `/home/your_name/discord-bot-website`)
 
-```json
-{
-  "name": "Permission Name",
-  "reason": "Optional explanation why this permission is needed"
-}
-```
+2. Push to `main` branch - deployment happens automatically
 
-The `reason` field is optional but recommended to help users understand why your bot needs specific permissions.
+3. Each bot will be deployed to: `$DEPLOY_PATH/{bot-name}-website/`
 
-## Deploying Multiple Bots
+**Container Names:**
+- Containers are named `{bot-name}-website` (e.g., `naago-website`, `paissa-website`)
+- Each bot runs on its configured port from `config.json`
 
-This is a template for a single bot. To host multiple bots:
 
-1. Clone this repository for each bot
-2. Customize the `config.json` for each instance
-3. Deploy each instance separately (different domains/ports)
-4. Each instance runs independently with its own configuration
+## Customization Tips
 
-Example:
-```
-bot1-website/  (configured for Bot 1)
-bot2-website/  (configured for Bot 2)
-bot3-website/  (configured for Bot 3)
-```
+### Favicon
+The favicon is automatically set from the bot's avatar image. No manual configuration needed.
 
-## Project Structure
+## Troubleshooting
 
-```
-/public
-  config.json         # Bot configuration
-  avatar.png         # Bot avatar
-  banner.png         # Banner image
-  carousel1.png      # Screenshot 1
-  carousel2.png      # Screenshot 2
+**Images not loading?**
+- Check that images exist in `/public/{bot-name}/`
+- Verify image paths in `config.json` start with `/{bot-name}/`
+- Ensure filenames match exactly (case-sensitive)
 
-/src
-  /components
-    Header.vue
-    Carousel.vue
-    Overview.vue
-    Permissions.vue
-    Sidebar.vue
-  /styles
-    main.css
-  App.vue
-  config.ts
-  main.ts
-```
+**Config not loading?**
+- Verify `config.json` is valid JSON (no trailing commas)
+- Check browser console for errors
+- Ensure the config directory name matches the path in image URLs
+
+**Port conflicts?**
+- Each bot must have a unique `port` in its `config.json`
+- Check that ports aren't already in use: `sudo lsof -i :PORT`
+
+**Deployment issues?**
+- Check GitHub Actions logs for build errors
+- Verify SSH keys and server access
+- Ensure Docker is running on the server
+- Check container logs: `docker logs {bot-name}-website`
+
+**Styling looks broken?**
+- Run `npm install` to ensure dependencies are installed
+- Clear browser cache
+- Check console for errors
 
 ## Tech Stack
 
@@ -163,40 +165,7 @@ bot3-website/  (configured for Bot 3)
 - Vite
 - Docker
 - Nginx (production)
-
-## Customization Tips
-
-### Top Banner
-The small banner at the top shows your bot name with a subtle dark background.
-
-### Theme Toggle
-Users can switch between:
-- **Auto** - Follows system preference
-- **Light** - Light theme
-- **Dark** - Dark theme
-
-### Server Count Formatting
-Numbers are automatically formatted:
-- Under 1,000: Shows as-is (e.g., "500")
-- 1,000-999,999: Shows with K (e.g., "5.2K")
-- 1,000,000+: Shows with M (e.g., "1.5M")
-
-## Troubleshooting
-
-**Images not loading?**
-- Check that images exist in `/public`
-- Verify image paths in `config.json` start with `/`
-- Ensure filenames match exactly (case-sensitive)
-
-**Config not loading?**
-- Verify `config.json` is valid JSON (no trailing commas)
-- Check browser console for errors
-- Make sure file is in `/public/config.json`
-
-**Styling looks broken?**
-- Run `npm install` to ensure dependencies are installed
-- Clear browser cache
-- Check console for errors
+- GitHub Actions (CI/CD)
 
 ## License
 
