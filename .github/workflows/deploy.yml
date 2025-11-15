@@ -106,6 +106,13 @@ jobs:
           REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           echo "repo=$REPO_LOWER" >> $GITHUB_OUTPUT
       
+      - name: Read port from config
+        id: port
+        run: |
+          PORT=$(jq -r '.port // 80' public/${{ matrix.config }}/config.json)
+          echo "port=$PORT" >> $GITHUB_OUTPUT
+          echo "Using port $PORT for ${{ matrix.config }}"
+      
       - name: Create docker-compose file for config
         run: |
           cat > docker-compose.${{ matrix.config }}.yml << EOF
@@ -114,8 +121,9 @@ jobs:
           services:
             app:
               image: ghcr.io/${{ steps.repo.outputs.repo }}:${{ matrix.config }}-latest
+              container_name: ${{ matrix.config }}-app
               ports:
-                - "80:80"
+                - "${{ steps.port.outputs.port }}:80"
               restart: unless-stopped
           EOF
       

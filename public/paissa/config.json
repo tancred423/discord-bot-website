@@ -49,6 +49,7 @@
       "name": "Use External Emojis",
       "reason": "Allows the bot to use custom emojis to enhance the visual presentation of housing information."
     }
-  ]
+  ],
+  "port": 3552
 }
 

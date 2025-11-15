@@ -53,6 +53,7 @@
       "name": "Attach Files",
       "reason": "To send generated character profile images."
     }
-  ]
+  ],
+  "port": 3551
 }
 
