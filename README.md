@@ -2,6 +2,11 @@
 
 A simple, reusable website template for showcasing your Discord bot with a Discord-themed design. Supports hosting multiple bot websites from a single repository with automatic deployment.
 
+## Live Examples
+
+* https://paissa.tancred.de
+* https://naago.tancred.de
+
 ## Features
 
 - Discord-inspired UI matching the Discovery page
