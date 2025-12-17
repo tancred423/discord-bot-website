@@ -122,9 +122,17 @@ jobs:
             website:
               image: ghcr.io/${{ steps.repo.outputs.repo }}:${{ matrix.config }}-latest
               container_name: ${{ matrix.config }}-website
+              expose:
+                - "80"
+              networks:
+                - web
               ports:
                 - "${{ steps.port.outputs.port }}:80"
               restart: unless-stopped
+
+          networks:
+            web:
+              external: true
           EOF
       
       - name: Copy docker-compose file to server
