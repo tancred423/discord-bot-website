@@ -1,10 +1,6 @@
 <template>
   <aside class="sidebar">
     <div class="sidebar-section">
-      <h3 class="sidebar-title">Server Count</h3>
-    </div>
-
-    <div class="sidebar-section">
       <h3 class="sidebar-title">Categories</h3>
       <div class="tags">
         <span 
