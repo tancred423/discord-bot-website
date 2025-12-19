@@ -10,7 +10,6 @@ export interface BotConfig {
   banner: string
   inviteUrl: string
   supportServerUrl: string
-  serverCount: number
   categories: string[]
   languages: string[]
   carouselImages: string[]

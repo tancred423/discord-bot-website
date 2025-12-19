@@ -23,7 +23,6 @@
           
           <aside class="sidebar-content">
             <Sidebar 
-              :server-count="config.serverCount"
               :categories="config.categories"
               :languages="config.languages"
               :links="config.links"

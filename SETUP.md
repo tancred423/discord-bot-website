@@ -15,7 +15,6 @@ npm install
 3. Update the bot configuration at `/public/config.json`:
    - Set your actual bot invite URL in `inviteUrl`
    - Set your support server invite URL in `supportServerUrl`
-   - Update `serverCount` with your current server count
    - Customize `description`, `permissions`, `links`, etc.
 
 4. Run the development server:
@@ -51,7 +50,6 @@ All fields in `config.json` are required. Here's what each one does:
 **banner**: Path to banner image (must start with `/`)  
 **inviteUrl**: Full Discord OAuth2 authorization URL  
 **supportServerUrl**: Discord server invite link  
-**serverCount**: Current number of servers (number only)  
 **categories**: Array of category tags  
 **languages**: Array of supported languages  
 **carouselImages**: Array of paths to screenshot images  

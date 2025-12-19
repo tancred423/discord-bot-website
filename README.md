@@ -80,7 +80,6 @@ Each bot needs a `config.json` in its directory:
   "banner": "/mybot/banner.png",
   "inviteUrl": "https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID",
   "supportServerUrl": "https://discord.gg/YOUR_INVITE",
-  "serverCount": "100 (as of 25 Nov 2025)",
   "categories": ["Utility", "Fun"],
   "languages": ["English, US"],
   "port": 3551,
