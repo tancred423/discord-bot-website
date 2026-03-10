@@ -102,7 +102,7 @@ const onMobileSelect = (event: Event) => {
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 650;
   transition:
     background 0.15s,
     color 0.15s;
@@ -118,7 +118,6 @@ const onMobileSelect = (event: Event) => {
 .nav-link.active {
   background: var(--background-modifier-selected);
   color: var(--text-primary);
-  font-weight: 600;
 }
 
 .nav-section {
@@ -127,7 +126,6 @@ const onMobileSelect = (event: Event) => {
 
 .nav-category-link {
   font-size: 11px;
-  font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;

@@ -1,38 +1,49 @@
 import { defineConfig, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { readdirSync, existsSync, writeFileSync } from 'fs'
+import { readdirSync, existsSync, mkdirSync, writeFileSync } from 'fs'
 import { join } from 'path'
+
+const IMAGE_RE = /\.(png|jpe?g|gif|webp|svg)$/i
+
+function listPreviewImages(publicDir: string, bot: string): string[] {
+  const dir = join(publicDir, bot, 'previews')
+  if (!existsSync(dir)) return []
+  try {
+    return readdirSync(dir)
+      .filter((f) => IMAGE_RE.test(f))
+      .sort()
+  } catch {
+    return []
+  }
+}
 
 function imageManifestPlugin(): Plugin {
   let publicDir = ''
-
-  const generate = () => {
-    if (!publicDir) return
-    for (const entry of readdirSync(publicDir, { withFileTypes: true })) {
-      if (!entry.isDirectory()) continue
-      const dir = join(publicDir, entry.name, 'previews')
-      if (!existsSync(dir)) continue
-      try {
-        const files = readdirSync(dir)
-          .filter(f => /\.(png|jpe?g|gif|webp|svg)$/i.test(f))
-          .sort()
-        writeFileSync(join(dir, '_manifest.json'), JSON.stringify(files))
-      } catch { /* skip unreadable directories */ }
-    }
-  }
 
   return {
     name: 'image-manifest',
     configResolved(config) {
       publicDir = config.publicDir
-      generate()
     },
     configureServer(server) {
-      server.watcher.on('all', (_event, filePath) => {
-        if (filePath.includes('/previews/') && !filePath.endsWith('_manifest.json')) {
-          generate()
-        }
+      server.middlewares.use((req, res, next) => {
+        const match = req.url?.match(/^\/([^/]+)\/previews\/_manifest\.json/)
+        if (!match) return next()
+        const files = listPreviewImages(publicDir, match[1])
+        res.setHeader('Content-Type', 'application/json')
+        res.end(JSON.stringify(files))
       })
+    },
+    writeBundle(_, bundle) {
+      const outDir = join(publicDir, '..', 'dist')
+      for (const entry of readdirSync(publicDir, { withFileTypes: true })) {
+        if (!entry.isDirectory()) continue
+        const files = listPreviewImages(publicDir, entry.name)
+        if (!files.length) continue
+        const manifestDir = join(outDir, entry.name, 'previews')
+        mkdirSync(manifestDir, { recursive: true })
+        writeFileSync(join(manifestDir, '_manifest.json'), JSON.stringify(files))
+      }
     }
   }
 }
