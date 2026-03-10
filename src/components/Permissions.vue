@@ -4,14 +4,10 @@
     <div class="permissions-card">
       <h3 class="card-title">Required Permissions</h3>
       <div class="permissions-list">
-        <div 
-          v-for="(permission, index) in permissions" 
-          :key="index"
-          class="permission-item"
-        >
+        <div v-for="(permission, index) in permissions" :key="index" class="permission-item">
           <div class="permission-header">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="check-icon">
-              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
             </svg>
             <span class="permission-name">{{ permission.name }}</span>
           </div>
@@ -95,4 +91,3 @@ defineProps<{
   flex-shrink: 0;
 }
 </style>
-

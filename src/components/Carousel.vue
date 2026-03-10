@@ -1,19 +1,15 @@
 <template>
   <div class="carousel">
-    <div 
-      class="carousel-container"
-      @mouseenter="handleMouseEnter"
-      @mouseleave="handleMouseLeave"
-    >
-      <button class="carousel-arrow left" @click="handlePrev" aria-label="Previous image">
+    <div class="carousel-container" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+      <button class="carousel-arrow left" aria-label="Previous image" @click="handlePrev">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
         </svg>
       </button>
-      
+
       <div class="carousel-content">
-        <img 
-          v-for="(image, index) in images" 
+        <img
+          v-for="(image, index) in images"
           :key="index"
           :src="image"
           :alt="`Screenshot ${index + 1}`"
@@ -22,38 +18,36 @@
           @click="openPreview(index)"
         />
       </div>
-      
-      <button class="carousel-arrow right" @click="handleNext" aria-label="Next image">
+
+      <button class="carousel-arrow right" aria-label="Next image" @click="handleNext">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+          <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
         </svg>
       </button>
     </div>
-    
+
     <div class="carousel-dots">
-      <button 
-        v-for="(_, index) in images" 
+      <button
+        v-for="(_, index) in images"
         :key="index"
         class="dot"
         :class="{ active: index === currentIndex }"
-        @click="handleGoTo(index)"
         :aria-label="`Go to image ${index + 1}`"
-      />
+        @click="handleGoTo(index)"
+      ></button>
     </div>
 
     <Teleport to="body">
-      <div 
-        v-if="showPreview" 
-        class="image-preview-overlay"
-        @click="closePreview"
-      >
-        <button class="preview-close" @click="closePreview" aria-label="Close preview">
+      <div v-if="showPreview" class="image-preview-overlay" @click="closePreview">
+        <button class="preview-close" aria-label="Close preview" @click="closePreview">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
           </svg>
         </button>
-        <img 
-          :src="images[previewIndex]" 
+        <img
+          :src="images[previewIndex]"
           :alt="`Screenshot ${previewIndex + 1}`"
           class="preview-image"
           @click.stop
@@ -313,4 +307,3 @@ onUnmounted(() => {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 </style>
-

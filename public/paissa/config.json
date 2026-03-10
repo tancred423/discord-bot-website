@@ -1,18 +1,13 @@
 {
   "name": "PaissaHouse",
-  "description": "This Discord bot can display housing information for the MMORPG Final Fantasy XIV (FFXIV, FF14).\n\nYou can filter and display data from PaissaDB directly in Discord, making it easier to share it with friends.\n\nYou can also set up a text channel within your server to receive announcements when a new lottery phase begins.\n\n**Commands**\n\n* /paissa [datacenter] [world] → Use this command to find housing information for a data center and world of your choice. You can further filter it within the command using the optional parameters. You can filter it by:\n  * [district] → Housing District (Mist, The Lavender Beds, The Gauntlet, Shirogane, Empyreum)\n  * [size] → Plot Size (Small, Medium, Large)\n  * [lottery-phase] → Current Phase (Accepting Entries, Results, Unavailable, FCFS, Missing/Outdated)\n  * [allowed-tenants] → Who can enter the lottery (Free Company, Individual)\n  * [plot] → Specific plot number. Selects subdivision automatically (30 also shows 60)\n  * [ward] → Specific ward number\n* /help → Information about the bot, transparency, commands and the deployment hash.",
+  "overview": "overview.md",
   "avatar": "/paissa/avatar.png",
   "banner": "/paissa/banner.png",
   "inviteUrl": "https://discord.com/oauth2/authorize?client_id=1425410120568803400",
   "supportServerUrl": "https://discord.gg/4GpaH5V",
   "categories": ["Games"],
   "languages": ["English, US"],
-  "carouselImages": [
-    "/paissa/carousel1.png",
-    "/paissa/carousel2.png",
-    "/paissa/carousel3.png",
-    "/paissa/carousel4.png"
-  ],
+  "previewFolder": "previews",
   "links": [
     {
       "label": "PaissaDB by Zhu",
@@ -49,6 +44,11 @@
       "reason": "Allows the bot to use custom emojis to enhance the visual presentation of housing information."
     }
   ],
-  "port": 3552
+  "port": 3552,
+  "commandCategories": [
+    {
+      "name": "Commands",
+      "file": "commands/commands.md"
+    }
+  ]
 }
-

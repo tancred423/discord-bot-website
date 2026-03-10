@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+.github
+README.md
+SETUP.md
+LICENSE
+.env
+.env.*
