@@ -10,9 +10,9 @@ View ongoing and upcoming FFXIV events such as Starlight Celebration or Live Let
 
 Shows information about the next or current Live Letter.
 
-## /maintenance
+## /maintenances
 
-View current maintenances if any. Shows active maintenance schedules and their durations.
+View ongoing and upcoming maintenances.
 
 ## /when-is-reset
 
