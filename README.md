@@ -1,3 +1,7 @@
+> **Archived**
+>
+> Moved to https://gitlab.com/team-paissa/paissa-website
+
 # Discord Bot Website Template
 
 A simple, reusable website template for showcasing your Discord bot with a Discord-themed design. Supports hosting multiple bot websites from a single repository with automatic deployment.
